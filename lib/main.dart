@@ -31,9 +31,7 @@ class SamuiFidsApp extends StatelessWidget {
 }
 
 class FidsScreen extends StatefulWidget {
-  final QueueController? controller;
-
-  const FidsScreen({super.key, this.controller});
+  const FidsScreen({super.key});
 
   @override
   State<FidsScreen> createState() => _FidsScreenState();
@@ -41,51 +39,33 @@ class FidsScreen extends StatefulWidget {
 
 class _FidsScreenState extends State<FidsScreen> {
   late final QueueController _controller;
-  bool _ownsController = false;
   final FocusNode _focusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
-    if (widget.controller != null) {
-      _controller = widget.controller!;
-      _ownsController = false;
-    } else {
-      _controller = QueueController();
-      _ownsController = true;
-    }
+    _controller = QueueController();
     _focusNode.requestFocus();
   }
 
   @override
   void dispose() {
-    if (_ownsController) {
-      _controller.dispose();
-    }
+    _controller.dispose();
     _focusNode.dispose();
     super.dispose();
   }
 
   void _handleKeyEvent(KeyEvent event) {
     if (event is KeyDownEvent) {
-      final key = event.logicalKey;
-      if (key == LogicalKeyboardKey.space) {
+      if (event.logicalKey == LogicalKeyboardKey.space) {
         _controller.callNext();
-      } else if (key == LogicalKeyboardKey.digit1 || key == LogicalKeyboardKey.numpad1) {
-        _controller.callNext(targetDesk: 1);
-      } else if (key == LogicalKeyboardKey.digit2 || key == LogicalKeyboardKey.numpad2) {
-        _controller.callNext(targetDesk: 2);
-      } else if (key == LogicalKeyboardKey.digit3 || key == LogicalKeyboardKey.numpad3) {
-        _controller.callNext(targetDesk: 3);
-      } else if (key == LogicalKeyboardKey.keyB) {
+      } else if (event.logicalKey == LogicalKeyboardKey.keyB) {
         _controller.addReadyBatch();
-      } else if (key == LogicalKeyboardKey.keyA) {
-        _controller.toggleAutoDemo();
-      } else if (key == LogicalKeyboardKey.keyR) {
+      } else if (event.logicalKey == LogicalKeyboardKey.keyR) {
         _controller.reset();
-      } else if (key == LogicalKeyboardKey.keyC) {
+      } else if (event.logicalKey == LogicalKeyboardKey.keyC) {
         _controller.clearQueue();
-      } else if (key == LogicalKeyboardKey.keyT) {
+      } else if (event.logicalKey == LogicalKeyboardKey.keyT) {
         _controller.toggleSystemState();
       }
     }
@@ -128,7 +108,7 @@ class _FidsScreenState extends State<FidsScreen> {
                                     child: LeftPanel(
                                       activeCalls: _controller.activeCalls,
                                       nextBuffer: _controller.nextBuffer,
-                                      systemState: _controller.phase,
+                                      systemState: _controller.systemState,
                                     ),
                                   ),
 
@@ -139,7 +119,7 @@ class _FidsScreenState extends State<FidsScreen> {
                                   Expanded(
                                     child: RightPanel(
                                       readyBatches: _controller.readyBatches,
-                                      systemState: _controller.phase,
+                                      systemState: _controller.systemState,
                                     ),
                                   ),
                                 ],
@@ -147,9 +127,7 @@ class _FidsScreenState extends State<FidsScreen> {
                             ),
 
                             // Footer (98px)
-                            FooterTicker(
-                              phase: _controller.phase,
-                            ),
+                            const FooterTicker(),
                           ],
                         );
                       },
@@ -167,3 +145,4 @@ class _FidsScreenState extends State<FidsScreen> {
     );
   }
 }
+

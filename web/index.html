@@ -1,112 +1,81 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <base href="$FLUTTER_BASE_HREF">
+<!DOCTYPE html>
+<html>
+<head>
+  <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    For more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+
+    This is a placeholder for base href that will be replaced by the value of
+    the `--base-href` argument provided to `flutter build`.
+  -->
+  <base href="$FLUTTER_BASE_HREF">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="A new Flutter project.">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="samui_fids_kiosk">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <title>samui_fids_kiosk</title>
+  <link rel="manifest" href="manifest.json">
+</head>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #070B14;
+      overflow: hidden;
+      user-select: none;
+    }
+  </style>
+  <script>
+    window.playChime = function() {
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const ctx = new AudioContext();
+        if (ctx.state === 'suspended') {
+          ctx.resume();
+        }
+        // F4 (349.23 Hz), A4 (440.00 Hz), C5 (523.25 Hz) - F Major Arpeggio
+        const notes = [349.23, 440.00, 523.25];
+        notes.forEach((freq, idx) => {
+          const startTime = ctx.currentTime + idx * 0.16;
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, startTime);
+          
+          gain.gain.setValueAtTime(0.001, startTime);
+          gain.gain.linearRampToValueAtTime(0.25, startTime + 0.03);
+          gain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.85);
+          
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          
+          osc.start(startTime);
+          osc.stop(startTime + 0.9);
+        });
+      } catch (err) {
+        console.warn("Audio synthesis error:", err);
+      }
+    };
+  </script>
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+</html>
 
-  <meta charset="UTF-8">
-  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="description" content="Koh Samui Immigration - Flight Information Display System (FIDS) Kiosk Prototype">
-
-  <!-- iOS meta tags & icons -->
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Samui FIDS Kiosk">
-  <link rel="apple-touch-icon" href="icons/Icon-192.png">
-
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
-
-  <title>Koh Samui Immigration — FIDS Queue Display</title>
-  <link rel="manifest" href="manifest.json">
-
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-    html, body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      background-color: #070B14;
-      overflow: hidden;
-      user-select: none;
-      -webkit-user-select: none;
-    }
-  </style>
-
-  <script>
-    // AudioContext Singleton (resumed on first user interaction)
-    let _fidsAudioCtx = null;
-
-    function getFidsAudioContext() {
-      try {
-        if (!_fidsAudioCtx) {
-          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-          if (AudioContextClass) {
-            _fidsAudioCtx = new AudioContextClass();
-          }
-        }
-        if (_fidsAudioCtx && _fidsAudioCtx.state === 'suspended') {
-          _fidsAudioCtx.resume();
-        }
-      } catch (err) {
-        console.warn("FIDS AudioContext initialization warning:", err);
-      }
-      return _fidsAudioCtx;
-    }
-
-    // Auto-unlock on first pointer, touch, or keydown event
-    const unlockAudio = () => {
-      getFidsAudioContext();
-      window.removeEventListener('pointerdown', unlockAudio);
-      window.removeEventListener('keydown', unlockAudio);
-      window.removeEventListener('touchstart', unlockAudio);
-    };
-    window.addEventListener('pointerdown', unlockAudio, { passive: true });
-    window.addEventListener('keydown', unlockAudio, { passive: true });
-    window.addEventListener('touchstart', unlockAudio, { passive: true });
-
-    // Multi-Tone Airport FIDS Chime: F Major Arpeggio (F4 -> A4 -> C5)
-    window.playChime = function() {
-      try {
-        const ctx = getFidsAudioContext();
-        if (!ctx) return;
-
-        const now = ctx.currentTime;
-        const notes = [
-          { freq: 349.23, delay: 0.00 }, // F4
-          { freq: 440.00, delay: 0.16 }, // A4
-          { freq: 523.25, delay: 0.32 }, // C5
-        ];
-
-        notes.forEach(({ freq, delay }) => {
-          const startTime = now + delay;
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(freq, startTime);
-
-          // Fast linear attack to eliminate clicks, gentle exponential release
-          gain.gain.setValueAtTime(0.0001, startTime);
-          gain.gain.linearRampToValueAtTime(0.24, startTime + 0.025);
-          gain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.85);
-
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-
-          osc.start(startTime);
-          osc.stop(startTime + 0.90);
-        });
-      } catch (err) {
-        console.warn("FIDS Audio synthesis warning:", err);
-      }
-    };
-  </script>
-</head>
-<body>
-  <script src="flutter_bootstrap.js" async></script>
-</body>
-</html>
