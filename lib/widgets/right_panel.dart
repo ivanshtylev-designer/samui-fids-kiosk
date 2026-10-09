@@ -45,38 +45,40 @@ class RightPanel extends StatelessWidget {
     if (systemState == OperationalPhase.booting) {
       return Container(
         key: key,
-        height: 240,
+        constraints: const BoxConstraints(minHeight: 220),
         alignment: Alignment.center,
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         decoration: BoxDecoration(
           color: AppTokens.panelBackground,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppTokens.borderSubtle),
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const BlinkingDot(color: AppTokens.signalSuccess, size: 14),
-            const SizedBox(height: 16),
-            Text(
-              'SYNCING DOCUMENT BATCH STATUS...',
-              style: AppTokens.plexSans(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: AppTokens.signalSuccess,
-                letterSpacing: 2.5,
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const BlinkingDot(color: AppTokens.signalSuccess, size: 14),
+              const SizedBox(height: 16),
+              Text(
+                'SYNCING DOCUMENT BATCH STATUS...',
+                style: AppTokens.plexSans(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: AppTokens.signalSuccess,
+                  letterSpacing: 2.5,
+                ),
               ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Standby for Counter 4 passport batch numbers',
-              style: AppTokens.plexSans(
-                fontSize: 14,
-                color: AppTokens.textMuted,
-                letterSpacing: 1.0,
+              const SizedBox(height: 8),
+              Text(
+                'Standby for Counter 4 passport batch numbers',
+                style: AppTokens.plexSans(
+                  fontSize: 14,
+                  color: AppTokens.textMuted,
+                  letterSpacing: 1.0,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
     }
@@ -88,22 +90,21 @@ class RightPanel extends StatelessWidget {
       children: [
         if (isAfternoonRush)
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 18),
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
             margin: const EdgeInsets.only(bottom: 12),
             decoration: BoxDecoration(
               color: AppTokens.signalSuccess.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: AppTokens.signalSuccess.withValues(alpha: 0.5)),
             ),
             child: Row(
               children: [
-                const BlinkingDot(color: AppTokens.signalSuccess, size: 10),
+                const BlinkingDot(color: AppTokens.signalSuccess, size: 8),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
                     'AFTERNOON PICK-UP IN PROGRESS • BATCHES READY AT COUNTER 4',
                     style: AppTokens.plexSans(
-                      fontSize: 15,
+                      fontSize: 14,
                       fontWeight: FontWeight.bold,
                       color: AppTokens.signalSuccess,
                       letterSpacing: 1.2,
@@ -118,7 +119,7 @@ class RightPanel extends StatelessWidget {
           final item = index < readyBatches.length ? readyBatches[index] : null;
 
           return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6.0),
+            padding: const EdgeInsets.symmetric(vertical: 4.0),
             child: AnimatedSwitcher(
               duration: AppTokens.durationNormal,
               switchInCurve: Curves.easeOutCubic,
@@ -136,7 +137,7 @@ class RightPanel extends StatelessWidget {
                 );
               },
               child: item == null
-                  ? const SizedBox(key: ValueKey('empty_batch'), height: 72)
+                  ? const SizedBox(key: ValueKey('empty_batch'), height: 56)
                   : _ReadyBatchRow(
                       key: ValueKey(item.id),
                       item: item,
@@ -153,20 +154,18 @@ class RightPanel extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Passport Pick-up',
+          'PASSPORT PICK-UP',
           style: AppTokens.plexSans(
             fontSize: 34,
             fontWeight: FontWeight.bold,
             color: AppTokens.signalSuccess,
             letterSpacing: 2.0,
             height: 1.0,
-            glow: true,
-            glowColor: AppTokens.signalSuccess,
           ),
         ),
         const SizedBox(height: 8),
         Text(
-          'รับหนังสือเดินทาง • Counter 4',
+          'รับหนังสือเดินทาง',
           style: AppTokens.plexSansThai(
             fontSize: 20,
             fontWeight: FontWeight.normal,
@@ -254,29 +253,41 @@ class RightPanel extends StatelessWidget {
     return AnimatedOpacity(
       duration: AppTokens.durationNormal,
       opacity: systemState == OperationalPhase.booting ? 0.0 : 1.0,
-      child: Row(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // QR Code Card (240x240)
+          Text(
+            'TRACK QUEUE ON YOUR PHONE',
+            style: AppTokens.plexSans(
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+              color: AppTokens.signalInfo,
+              letterSpacing: 2.0,
+              height: 1.0,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            'ติดตามสถานะคิวผ่านมือถือ',
+            style: AppTokens.plexSansThai(
+              fontSize: 14,
+              color: AppTokens.signalInfo,
+              height: 1.0,
+            ),
+          ),
+          const SizedBox(height: 18),
           Container(
-            width: 240,
-            height: 240,
-            padding: const EdgeInsets.all(12),
+            width: 200,
+            height: 200,
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: AppTokens.textPrimary,
-              borderRadius: BorderRadius.circular(8),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.35),
-                  blurRadius: 16,
-                  offset: const Offset(0, 6),
-                ),
-              ],
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(4),
             ),
             child: QrImageView(
               data: 'https://queq.me/samui-immigration',
               version: QrVersions.auto,
-              size: 216.0,
+              size: 184.0,
               backgroundColor: Colors.transparent,
               eyeStyle: const QrEyeStyle(
                 eyeShape: QrEyeShape.square,
@@ -286,65 +297,6 @@ class RightPanel extends StatelessWidget {
                 dataModuleShape: QrDataModuleShape.square,
                 color: Colors.black,
               ),
-            ),
-          ),
-
-          const SizedBox(width: 28),
-
-          // Instructions & Context
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Track Queue on Phone',
-                  style: AppTokens.plexSans(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w700,
-                    color: AppTokens.signalInfo,
-                    letterSpacing: 1.5,
-                    height: 1.1,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  'ติดตามสถานะคิวผ่านมือถือใน QueQ',
-                  style: AppTokens.plexSansThai(
-                    fontSize: 16,
-                    color: AppTokens.signalInfo,
-                    height: 1.2,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'Scan the QR code to track your ticket live on your smartphone.\n'
-                  'You may wait outside under the shaded terrace or in Mae Nam cafes. '
-                  'The app alerts you when 3 tickets remain before your turn.',
-                  style: AppTokens.plexSans(
-                    fontSize: 15,
-                    color: AppTokens.textMuted,
-                    height: 1.45,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: AppTokens.cardBackground,
-                    borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: AppTokens.borderSubtle),
-                  ),
-                  child: Text(
-                    'OFFICIAL APP: QueQ (iOS / Android)',
-                    style: AppTokens.plexSans(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: AppTokens.textMuted,
-                      letterSpacing: 1.0,
-                    ),
-                  ),
-                ),
-              ],
             ),
           ),
         ],
@@ -368,8 +320,7 @@ class _ReadyBatchRow extends StatelessWidget {
     return PulsingGlowCard(
       isHighlight: item.isHighlight,
       glowColor: AppTokens.signalSuccess,
-      backgroundColor: AppTokens.panelBackground.withValues(alpha: 0.5),
-      borderColor: AppTokens.borderSubtle,
+      padding: const EdgeInsets.symmetric(vertical: 6.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -390,18 +341,16 @@ class _ReadyBatchRow extends StatelessWidget {
           ),
 
           // Desk 4 Counter
-          Expanded(
-            child: AnimatedDigitText(
-              text: item.desk,
-              textAlign: TextAlign.right,
-              style: AppTokens.plexSans(
-                fontSize: 64,
-                fontWeight: FontWeight.bold,
-                color: textColor,
-                height: 1.0,
-                glow: item.isHighlight,
-                glowColor: AppTokens.signalSuccess,
-              ),
+          Text(
+            item.desk,
+            textAlign: TextAlign.right,
+            style: AppTokens.plexSans(
+              fontSize: 48,
+              fontWeight: FontWeight.bold,
+              color: textColor,
+              height: 1.0,
+              glow: item.isHighlight,
+              glowColor: AppTokens.signalSuccess,
             ),
           ),
         ],

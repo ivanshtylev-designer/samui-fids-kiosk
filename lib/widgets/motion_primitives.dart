@@ -113,27 +113,20 @@ class _PulsingGlowCardState extends State<PulsingGlowCard>
       builder: (context, child) {
         final double pulseVal = widget.isHighlight ? _pulseAnimation.value : 0.0;
         final double baseAlpha = widget.isHighlight ? (0.10 + 0.14 * pulseVal) : 0.0;
-        final double borderAlpha = widget.isHighlight ? (0.35 + 0.35 * pulseVal) : 0.0;
 
         return Container(
           padding: widget.padding,
           decoration: BoxDecoration(
             color: widget.isHighlight
                 ? widget.glowColor.withValues(alpha: baseAlpha)
-                : widget.backgroundColor,
+                : Colors.transparent,
             borderRadius: radius,
-            border: Border.all(
-              color: widget.isHighlight
-                  ? widget.glowColor.withValues(alpha: borderAlpha)
-                  : widget.borderColor,
-              width: widget.isHighlight ? 1.5 : 1.0,
-            ),
             boxShadow: widget.isHighlight
                 ? [
                     BoxShadow(
-                      color: widget.glowColor.withValues(alpha: 0.18 + 0.16 * pulseVal),
-                      blurRadius: 24.0 + 12.0 * pulseVal,
-                      spreadRadius: 2.0 + 3.0 * pulseVal,
+                      color: widget.glowColor.withValues(alpha: 0.16 + 0.12 * pulseVal),
+                      blurRadius: 28.0 + 12.0 * pulseVal,
+                      spreadRadius: 1.0 + 2.0 * pulseVal,
                     ),
                   ]
                 : null,

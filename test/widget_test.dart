@@ -110,8 +110,8 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 300));
 
-      expect(find.text('Call to Counter'), findsOneWidget);
-      expect(find.text('Passport Pick-up'), findsOneWidget);
+      expect(find.text('CALL TO COUNTER'), findsOneWidget);
+      expect(find.text('PASSPORT PICK-UP'), findsOneWidget);
       expect(find.text('A 065'), findsOneWidget);
       expect(find.text('A 050—A 058'), findsOneWidget);
     });
@@ -135,7 +135,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 300));
 
       expect(find.text('LUNCH BREAK (12:00 – 13:00) • COUNTERS ON HOLD'), findsOneWidget);
-      expect(find.text('Passport Pick-up'), findsOneWidget);
+      expect(find.text('PASSPORT PICK-UP'), findsOneWidget);
     });
 
     testWidgets('renders afternoon pickup banner when phase is afternoonPickup',

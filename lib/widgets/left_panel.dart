@@ -58,7 +58,6 @@ class LeftPanel extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppTokens.panelBackground,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTokens.borderSubtle),
       ),
       child: FittedBox(
         fit: BoxFit.scaleDown,
@@ -100,7 +99,6 @@ class LeftPanel extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppTokens.cardBackground,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTokens.signalInfo.withValues(alpha: 0.4)),
       ),
       child: FittedBox(
         fit: BoxFit.scaleDown,
@@ -147,16 +145,15 @@ class LeftPanel extends StatelessWidget {
       key: key,
       children: [
         Container(
-          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
           margin: const EdgeInsets.only(bottom: 12),
           decoration: BoxDecoration(
             color: AppTokens.signalWarning.withValues(alpha: 0.12),
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: AppTokens.signalWarning.withValues(alpha: 0.5)),
           ),
           child: Row(
             children: [
-              const BlinkingDot(color: AppTokens.signalWarning, size: 10),
+              const BlinkingDot(color: AppTokens.signalWarning, size: 8),
               const SizedBox(width: 14),
               Expanded(
                 child: Column(
@@ -165,7 +162,7 @@ class LeftPanel extends StatelessWidget {
                     Text(
                       'LUNCH BREAK (12:00 – 13:00) • COUNTERS ON HOLD',
                       style: AppTokens.plexSans(
-                        fontSize: 16,
+                        fontSize: 14,
                         fontWeight: FontWeight.bold,
                         color: AppTokens.signalWarning,
                         letterSpacing: 1.5,
@@ -175,7 +172,7 @@ class LeftPanel extends StatelessWidget {
                     Text(
                       'พักเที่ยง — เคาน์เตอร์เปิดให้บริการต่อเวลา 13:00 น.',
                       style: AppTokens.plexSansThai(
-                        fontSize: 14,
+                        fontSize: 13,
                         color: AppTokens.textMuted,
                       ),
                     ),
@@ -188,7 +185,7 @@ class LeftPanel extends StatelessWidget {
         ...List.generate(activeCalls.length, (index) {
           final item = activeCalls[index];
           return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6.0),
+            padding: const EdgeInsets.symmetric(vertical: 4.0),
             child: _ActiveCallRow(
               key: ValueKey('paused_${item.id}'),
               item: item,
@@ -208,7 +205,7 @@ class LeftPanel extends StatelessWidget {
         ...List.generate(activeCalls.length, (index) {
           final item = activeCalls[index];
           return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6.0),
+            padding: const EdgeInsets.symmetric(vertical: 4.0),
             child: _ActiveCallRow(
               key: ValueKey(item.id),
               item: item,
@@ -227,31 +224,27 @@ class LeftPanel extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Label Header
-        Row(
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'NEXT',
-                  style: AppTokens.plexSans(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: AppTokens.signalInfo,
-                    letterSpacing: 2.0,
-                    height: 1.0,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  'คิวถัดไป',
-                  style: AppTokens.plexSansThai(
-                    fontSize: 14,
-                    color: AppTokens.signalInfo,
-                    height: 1.0,
-                  ),
-                ),
-              ],
+            Text(
+              'NEXT',
+              style: AppTokens.plexSans(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: AppTokens.signalInfo,
+                letterSpacing: 2.0,
+                height: 1.0,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'คิวถัดไป',
+              style: AppTokens.plexSansThai(
+                fontSize: 14,
+                color: AppTokens.signalInfo,
+                height: 1.0,
+              ),
             ),
           ],
         ),
@@ -263,7 +256,7 @@ class LeftPanel extends StatelessWidget {
             final next = index < nextBuffer.length ? nextBuffer[index] : null;
 
             return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5.0),
+              padding: const EdgeInsets.symmetric(vertical: 4.0),
               child: AnimatedSwitcher(
                 duration: AppTokens.durationNormal,
                 switchInCurve: Curves.easeOutCubic,
@@ -281,16 +274,17 @@ class LeftPanel extends StatelessWidget {
                   );
                 },
                 child: next == null
-                    ? const SizedBox(key: ValueKey('empty_slot'), height: 42)
+                    ? const SizedBox(key: ValueKey('empty_slot'), height: 38)
                     : Row(
                         key: ValueKey(next.ticket),
                         children: [
                           // Ticket Number
                           Expanded(
+                            flex: 3,
                             child: Text(
                               next.ticket,
                               style: AppTokens.plexSans(
-                                fontSize: 38,
+                                fontSize: 36,
                                 fontWeight: FontWeight.w500,
                                 color: AppTokens.textMuted,
                                 letterSpacing: 2.0,
@@ -301,6 +295,7 @@ class LeftPanel extends StatelessWidget {
 
                           // Service Label
                           Expanded(
+                            flex: 7,
                             child: Text(
                               next.service,
                               style: AppTokens.plexSans(
@@ -308,30 +303,6 @@ class LeftPanel extends StatelessWidget {
                                 fontWeight: FontWeight.normal,
                                 color: AppTokens.textMuted,
                                 height: 1.1,
-                              ),
-                            ),
-                          ),
-
-                          // Desk hint indicator
-                          Expanded(
-                            child: Align(
-                              alignment: Alignment.centerRight,
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                                decoration: BoxDecoration(
-                                  color: AppTokens.cardBackground.withValues(alpha: 0.6),
-                                  borderRadius: BorderRadius.circular(6),
-                                  border: Border.all(color: AppTokens.borderSubtle),
-                                ),
-                                child: Text(
-                                  'DESK ${next.deskHint}',
-                                  style: AppTokens.plexSans(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w600,
-                                    color: AppTokens.textDim,
-                                    letterSpacing: 1.0,
-                                  ),
-                                ),
                               ),
                             ),
                           ),
@@ -350,15 +321,13 @@ class LeftPanel extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Call to Counter',
+          'CALL TO COUNTER',
           style: AppTokens.plexSans(
             fontSize: 34,
             fontWeight: FontWeight.bold,
             color: AppTokens.signalAction,
             letterSpacing: 2.0,
             height: 1.0,
-            glow: true,
-            glowColor: AppTokens.signalAction,
           ),
         ),
         const SizedBox(height: 8),
@@ -380,6 +349,7 @@ class LeftPanel extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
+          flex: 3,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -406,6 +376,7 @@ class LeftPanel extends StatelessWidget {
           ),
         ),
         Expanded(
+          flex: 5,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -432,6 +403,7 @@ class LeftPanel extends StatelessWidget {
           ),
         ),
         Expanded(
+          flex: 2,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
@@ -462,9 +434,6 @@ class LeftPanel extends StatelessWidget {
   }
 
   Widget _buildSeparator() {
-    if (systemState != OperationalPhase.morningIntake) {
-      return const SizedBox.shrink();
-    }
     return Container(
       height: 32,
       alignment: Alignment.center,
@@ -496,18 +465,18 @@ class _ActiveCallRow extends StatelessWidget {
 
     final Color serviceColor = item.isHighlight
         ? Colors.white
-        : (isEmpty || isPaused ? AppTokens.textDim : AppTokens.textPrimary);
+        : (isEmpty || isPaused ? AppTokens.textDim : Colors.white);
 
     return PulsingGlowCard(
       isHighlight: item.isHighlight && !isPaused,
       glowColor: AppTokens.signalAction,
-      backgroundColor: isEmpty ? Colors.transparent : AppTokens.panelBackground.withValues(alpha: 0.5),
-      borderColor: isEmpty ? AppTokens.borderSubtle.withValues(alpha: 0.3) : AppTokens.borderSubtle,
+      padding: const EdgeInsets.symmetric(vertical: 6.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // Ticket Number with Digit Transition
           Expanded(
+            flex: 3,
             child: AnimatedDigitText(
               text: item.ticket,
               style: AppTokens.plexSans(
@@ -524,40 +493,26 @@ class _ActiveCallRow extends StatelessWidget {
 
           // Service Description
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  item.service,
-                  style: AppTokens.plexSans(
-                    fontSize: 26,
-                    fontWeight: FontWeight.normal,
-                    color: serviceColor,
-                    height: 1.1,
-                  ),
-                ),
-                if (isPaused)
-                  Text(
-                    'ON HOLD • พักให้บริการชั่วคราว',
-                    style: AppTokens.plexSans(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: AppTokens.signalWarning,
-                      letterSpacing: 1.0,
-                    ),
-                  ),
-              ],
+            flex: 5,
+            child: Text(
+              item.service,
+              style: AppTokens.plexSans(
+                fontSize: 24,
+                fontWeight: FontWeight.normal,
+                color: serviceColor,
+                height: 1.1,
+              ),
             ),
           ),
 
           // Desk Counter Number
           Expanded(
+            flex: 2,
             child: AnimatedDigitText(
               text: item.desk,
               textAlign: TextAlign.right,
               style: AppTokens.plexSans(
-                fontSize: 64,
+                fontSize: 48,
                 fontWeight: FontWeight.bold,
                 color: textColor,
                 height: 1.0,
